@@ -1,7 +1,7 @@
 import React from 'react';
 import User from './user';
 
-const Users = ({users, ...rest}) => {
+const Users = ({users, currentPage, countOnPage, ...rest}) => {
   return users.length > 0 && <table className="table">
       <thead>
         <tr>
@@ -15,8 +15,8 @@ const Users = ({users, ...rest}) => {
         </tr>
       </thead>
       <tbody>
-        {users.map(user => {
-          return <User {...user} {...rest} key={user._id} />
+        {users.map((user, index) => {
+          if ((index >= currentPage * countOnPage) && (index < (currentPage + 1) * countOnPage)) return <User {...user} {...rest} key={user._id} />
         })}
         
       </tbody>
