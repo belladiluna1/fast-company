@@ -1,23 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { paginate } from '../utils/paginate';
 import Pagination from './pagination';
 import User from './user';
+import api from '../api';
 import PropTypes from 'prop-types';
+import GroupList from './groupList';
+import SearchStatus from './searchStatus';
 
 const Users = ({ users: allUsers, ...rest }) => {
-  const count = allUsers.length;
-  const pageSize = 4;
   const [currentPage, setCurrentPage] = useState(1);
+  const [professions, setProfessions] = useState();
+  const [selectedProf, setSelectedProf] = useState();
+
+  const pageSize = 4;
+
+  useEffect(() => {
+    api.professions.fetchAll().then((data) => setProfessions(data));
+  }, []);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedProf]);
+
+  const handleProfessionSelect = item => {
+    setSelectedProf(item);
+  };
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
+  const filteredUsers = selectedProf ? allUsers.filter((user) => user.profession._id === selectedProf._id) : allUsers;
 
-  const users = paginate(allUsers, currentPage, pageSize);
+  const count = filteredUsers.length;
 
-  return (
-    count > 0 && (
-      <>
+  const users = paginate(filteredUsers, currentPage, pageSize);
+
+  const clearFilter = () => {
+    setSelectedProf();
+  };
+
+  return (<>
+    <SearchStatus count={count} />
+    <div className='d-flex'>
+
+      {professions && <div className='d-flex flex-column flex-shrink-0 p-3'>
+        <GroupList
+        selectedItem={selectedProf}
+        items={professions}
+        onItemSelect={handleProfessionSelect} />
+        <button onClick={clearFilter} className='btn btn-secondary mt-2'>Очистить</button>
+      </div>}
+
+      {count > 0 && <div className='d-flex flex-column'>
         <table className='table'>
           <thead>
             <tr>
@@ -36,14 +69,17 @@ const Users = ({ users: allUsers, ...rest }) => {
             })}
           </tbody>
         </table>
-        <Pagination
-          itemsCount={count}
-          pageSize={pageSize}
-          onPageChange={handlePageChange}
-          currentPage={currentPage}
-        />
-      </>
-    )
+        <div className='d-flex justify-content-center'>
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
+        </div>}
+      </div>
+    </>
   );
 };
 
