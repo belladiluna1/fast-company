@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { paginate } from '../utils/paginate';
-import Pagination from './pagination';
+import Pagination from '../components/pagination';
 import api from '../api';
-import GroupList from './groupList';
-import SearchStatus from './searchStatus';
-import UsersTable from './UsersTable';
+import GroupList from '../components/groupList';
+import SearchStatus from '../components/searchStatus';
+import UsersTable from '../components/UsersTable';
 import _ from 'lodash';
 
-const Users = () => {
+const UsersList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
@@ -101,4 +101,4 @@ const Users = () => {
   }
 };
 
-export default Users;
+export default UsersList;

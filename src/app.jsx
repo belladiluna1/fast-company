@@ -1,10 +1,25 @@
 import React from 'react';
-import Users from './components/users';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import NavBar from './components/NavBar';
+import Users from './layouts/users';
+import Main from './layouts/main';
+import Login from './layouts/login';
+
+const links = [
+  { path: '/', name: 'Main' },
+  { path: '/login', name: 'Login' },
+  { path: '/users', name: 'Users' }
+];
 
 function App() {
-  return (
-    <Users />
-  );
+  return <BrowserRouter>
+    <NavBar links={links} />
+    <Switch>
+      <Route path='/' exact component={Main}/>
+      <Route path='/login' component={Login}/>
+      <Route path='/users/:userId?' component={Users}/>
+    </Switch>
+  </BrowserRouter>;
 }
 
 export default App;
