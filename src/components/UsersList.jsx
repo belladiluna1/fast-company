@@ -13,13 +13,15 @@ const UsersList = () => {
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: 'name', order: 'asc' });
   const [allUsers, setAllUsers] = useState();
+  const [searchString, setSearchString] = useState('');
 
   useEffect(() => {
-    api.users.fetchAll().then((data) => setAllUsers(
-      data.map((user) => {
+    api.users.fetchAll().then((data) => {
+      const u = data.map((user) => {
         return { ...user, status: false };
-      })
-    ));
+      });
+      setAllUsers(u);
+    });
   }, []);
 
   const handleStatus = (userId) => {
@@ -57,33 +59,42 @@ const UsersList = () => {
     setCurrentPage(pageIndex);
   };
 
-  if (allUsers) {
-    const filteredUsers = selectedProf ? allUsers.filter((user) => user.profession._id === selectedProf._id) : allUsers;
+  if (!allUsers) return <>Loading...</>;
 
-    const count = filteredUsers.length;
+  let filteredUsers = allUsers;
+  if (selectedProf) filteredUsers = filteredUsers.filter((user) => user.profession._id === selectedProf._id);
+  if (searchString) filteredUsers = filteredUsers.filter((item) => item.name.toLowerCase().indexOf(searchString.toLowerCase()) !== -1);
 
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+  const count = filteredUsers.length;
+  const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+  const users = paginate(sortedUsers, currentPage, pageSize);
 
-    const users = paginate(sortedUsers, currentPage, pageSize);
+  const clearFilter = () => {
+    setSelectedProf();
+  };
 
-    const clearFilter = () => {
-      setSelectedProf();
-    };
+  const handleSearchString = ({ target }) => {
+    setSearchString(target.value);
+    setCurrentPage(1);
+  };
 
-    return (<>
-      <SearchStatus count={count} />
-      <div className='d-flex'>
+  return (<>
+    <div className='d-flex'>
 
-        {professions && <div className='d-flex flex-column flex-shrink-0 p-3'>
-          <GroupList
-          selectedItem={selectedProf}
-          items={professions}
-          onItemSelect={handleProfessionSelect} />
-          <button onClick={clearFilter} className='btn btn-secondary mt-2'>Очистить</button>
-        </div>}
+      {professions && <div className='d-flex flex-column flex-shrink-0 p-3'>
+        <GroupList
+        selectedItem={selectedProf}
+        items={professions}
+        onItemSelect={handleProfessionSelect} />
+        <button onClick={clearFilter} className='btn btn-secondary mt-2'>Очистить</button>
+      </div>}
 
-        {count > 0 && <div className='d-flex flex-column'>
-          <UsersTable users={users} onSort={setSortBy} selectedSort={sortBy} {...{ handleStatus, handleDelete }} />
+      <div className='d-flex flex-column'>
+        <SearchStatus count={count} />
+
+        <input type='text' placeholder='Search...' className='m-2' onInput={handleSearchString} value={searchString} />
+
+        {count > 0 && <><UsersTable users={users} onSort={setSortBy} selectedSort={sortBy} {...{ handleStatus, handleDelete }} />
           <div className='d-flex justify-content-center'>
             <Pagination
               itemsCount={count}
@@ -92,13 +103,11 @@ const UsersList = () => {
               currentPage={currentPage}
             />
           </div>
-          </div>}
+          </>}
         </div>
-      </>
-    );
-  } else {
-    return <>Loading...</>;
-  }
+      </div>
+    </>
+  );
 };
 
 export default UsersList;
