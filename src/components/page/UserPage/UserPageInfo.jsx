@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import QualitiesList from './QualitiesList';
+import QualitiesList from '../../ui/qualities/QualitiesList';
 import { useHistory } from 'react-router-dom';
 
 const UserPageInfo = ({ user }) => {
   const history = useHistory();
 
   const handleClick = () => {
-    history.replace('/users');
+    history.push(`${user._id}/edit`);
   };
 
   return <>
@@ -20,7 +20,7 @@ const UserPageInfo = ({ user }) => {
       completedMeetings: {user.completedMeetings}
     </p>
     <h2>Rate: {user.rate}</h2>
-    <button onClick={() => handleClick()}>Все пользователи</button>
+    <button onClick={() => handleClick()}>Редактировать</button>
   </>;
 };
 

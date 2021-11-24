@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { paginate } from '../utils/paginate';
-import Pagination from '../components/pagination';
-import api from '../api';
-import GroupList from '../components/groupList';
-import SearchStatus from '../components/searchStatus';
-import UsersTable from '../components/UsersTable';
+import { paginate } from '../../../utils/paginate';
+import Pagination from '../../common/pagination';
+import api from '../../../api';
+import SearchStatus from '../../ui/searchStatus';
+import UsersTable from '../../ui/UsersTable';
+import GroupList from '../../common/groupList';
 import _ from 'lodash';
 
-const UsersList = () => {
+const UsersListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
@@ -110,4 +110,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default UsersListPage;

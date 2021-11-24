@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BookMark from './bookmark';
-import QualitiesList from './QualitiesList';
-import Table from './Table';
+import BookMark from '../common/bookmark';
+import Table from '../common/table';
+import Qualities from '../ui/qualities';
 
 const UsersTable = ({ users, onSort, selectedSort, handleStatus, handleDelete }) => {
   const columns = {
     name: { path: 'name', name: 'Имя' },
-    qualities: { name: 'Качества', component: (user) => <QualitiesList qualities={user.qualities}/> },
+    qualities: { name: 'Качества', component: (user) => <Qualities qualities={user.qualities}/> },
     professions: { path: 'profession.name', name: 'Профессия' },
     completedMeetings: { path: 'completedMeetings', name: 'Встретился, раз' },
     rate: { path: 'rate', name: 'Оценка' },

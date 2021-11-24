@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api from '../../../api';
 import PropTypes from 'prop-types';
-import UserPageInfo from './UserPageInfo';
+import UserPageEditInfo from './UserPageEditInfo';
 
-const UserPage = ({ id }) => {
+const UserPageEdit = ({ id }) => {
   const [user, setUser] = useState();
   useEffect(() => {
     api.users.getById(id).then((data) => setUser(data));
   }, []);
 
   return <>
-    {user ? <UserPageInfo user={user} /> : <h1>Loading</h1>}
+    {user ? <UserPageEditInfo user={user} /> : <h1>Loading</h1>}
   </>;
 };
 
-UserPage.propTypes = {
+UserPageEdit.propTypes = {
   id: PropTypes.string
 };
 
-export default UserPage;
+export default UserPageEdit;
